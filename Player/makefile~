@@ -1,0 +1,53 @@
+
+
+
+
+
+
+
+
+# the generated objects
+result_objects:\
+GUI_Code/playergui.o \
+GUI_Code/playlistview.o \
+SDL_Window/SDL_Window.o \	
+	medialist.o \
+	playerengine.o \
+	mediastore.o \ 
+	uri_mechanism.o \ 
+		  main.o
+
+
+
+CFLAGS :=\
+-lvlc\
+-lsqlite3\
+-lstdc++\
+-lSDLmain -lSDL 
+
+C_LINKERS:= \
+`pkg-config gtkmm-3.0 --cflags --libs`
+
+testplayer2: $(result_objects)
+	g++ $(result_objects) -o testplayer2 $(CFLAGS) $(C_LINKERS)
+
+
+
+
+GUI_Code/playergui.o:GUI_Code/playergui.cpp GUI_Code/playergui.h
+	g++ -c GUI_Code/playergui.cpp GUI_Code/playergui.h
+GUI_Code/playlistview.o:GUI_Code/playlistview.cpp GUI_Code/playlistview.h
+	g++ -c GUI_Code/playlistview.cpp GUI_Code/playlistview.h
+
+SDL_Window/SDL_Window.o:SDL_Window/SDL_Window.c SDL_Window/SDL_Window.h
+	gcc -c SDL_Window/SDL_Window.c SDL_Window/SDL_Window.h
+medialist.o:medialist.cpp medialist.h
+	g++ -c medialist.cpp medialist.h
+playerengine.o:playerengine.cpp playerengine.h
+	g++ -c playerengine.cpp playerengine.h
+mediastore.o:mediastore.cpp mediastore.h
+	g++ -c mediastore.cpp mediastore.h
+uri_mechanism.o:uri_mechanism.cpp uri_mechanism.h
+	g++ -c uri_mechanism.cpp uri_mechanism.h
+main.o:main.cpp
+	g++ -c main.cpp

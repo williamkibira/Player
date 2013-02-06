@@ -1,0 +1,22 @@
+Window_Code:=\
+main.cpp \
+PlayerWindow.cpp\
+PlayerWindow.h\
+treeview.cpp\
+treeview.h
+
+
+
+
+
+C_LIBS:=\
+`pkg-config gtkmm-3.0 --cflags --libs`
+
+
+
+
+compile:
+	g++ $(Window_Code) $(C_LIBS) -o testwindow  
+test:
+	./testwindow
+

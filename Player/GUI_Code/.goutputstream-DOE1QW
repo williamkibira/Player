@@ -1,0 +1,288 @@
+/*
+    <one line to give the program's name and a brief idea of what it does.>
+    Copyright (C) 2013  <copyright holder> <email>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+
+#include "playergui.h"
+#include <string>
+#include <iostream>
+
+Player_ControlsGUI::Player_ControlsGUI()
+: m_VBox_Main(Gtk::ORIENTATION_VERTICAL,20),
+  m_VBox(Gtk::ORIENTATION_VERTICAL,10),
+  m_SHBox(Gtk::ORIENTATION_VERTICAL,5),
+  m_SHBox2(Gtk::ORIENTATION_HORIZONTAL,5),
+  m_Frame_Horizontal("Will-tanium Software [^_^] "),
+  m_Frame_Vertical("  "),
+ 
+  
+  m_progressLabel("000:00:00.000000000 / 000:00:00.000000000"),
+m_Alignment(1, 1, 1, 0),
+m_AlignmentVol(1,1,0,0),
+m_AlignmentSeek(0,0,1,0),
+m_playbutton(Gtk::Stock::MEDIA_PLAY), 
+	m_pausebutton(Gtk::Stock::MEDIA_PAUSE), 
+	m_previousbutton(Gtk::Stock::MEDIA_PREVIOUS),
+	m_nextbutton(Gtk::Stock::MEDIA_NEXT),
+	m_openbutton(Gtk::Stock::OPEN),
+	m_stopbutton(Gtk::Stock::MEDIA_STOP)
+{
+  set_title("Player Controls:");
+  set_default_size(300, 350);
+  add(m_VBox_Main);
+
+  m_VBox_Main.pack_start(m_Frame_Horizontal, Gtk::PACK_SHRINK, 5);
+  
+  //The horizontal ButtonBoxes:
+  m_VBox.set_border_width(20);
+  m_Frame_Horizontal.add(m_VBox);
+ 
+   Gtk::ButtonBox* bbox = 0;
+   bbox = Gtk::manage( new Gtk::ButtonBox(Gtk::ORIENTATION_HORIZONTAL) );
+    bbox->set_border_width(5);
+   m_VBox.pack_start(*bbox);
+  
+  // adding the buttons to the box
+
+ bbox->set_layout(Gtk::BUTTONBOX_START);
+  bbox->set_spacing(5);
+
+  bbox->add(m_playbutton);
+  bbox->add(m_pausebutton);
+  bbox->add(m_previousbutton);
+  bbox->add(m_nextbutton);
+  bbox->add(m_openbutton);
+  bbox->add(m_stopbutton);
+  
+  // give the buttons there behavior and attributes :) Willnux master plan :)
+  
+  // Step 1: do the button to signal connections :)
+  
+  m_playbutton.signal_clicked().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_playbutton_pressed));
+  m_pausebutton.signal_clicked().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_pausebutton_pressed));
+  m_previousbutton.signal_clicked().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_previousbutton_pressed));
+  m_nextbutton.signal_clicked().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_nextbutton_pressed));
+  m_openbutton.signal_clicked().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_openbutton_pressed));
+  m_stopbutton.signal_clicked().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_stopbutton_pressed));
+
+   
+ m_playbutton.set_sensitive(false);
+ m_pausebutton.set_sensitive(false);
+ m_previousbutton.set_sensitive(false);
+ m_nextbutton.set_sensitive(false);
+ m_openbutton.set_sensitive();
+ m_stopbutton.set_sensitive(false);
+ m_pausebutton.hide();
+
+
+
+  m_VBox.pack_start(m_SHBox2);
+ 
+  m_SHBox2.set_border_width(5); 
+  m_SHBox2.pack_start(m_Alignment,Gtk::PACK_EXPAND_WIDGET,5);
+  
+ 
+   
+  test_seeker = 0.0;
+  
+  m_Alignment.add(m_ProgressBar); // my progress bar addition :)
+  
+
+  m_SHBox2.pack_start(m_progressLabel,Gtk::PACK_SHRINK,5); 
+  m_progressLabel.set_alignment(Gtk::ALIGN_CENTER);
+  // now for the seek bar
+  
+  
+  // Packing the seeker Component
+   
+ 
+  //m_Frame_Vertical.add(m_HBox);
+  m_VBox.pack_start(m_AlignmentSeek,Gtk::PACK_SHRINK,5);
+  m_AlignmentSeek.add(seeker);
+  seeker.set_range(0,100);
+  seeker.set_draw_value(false);
+  seeker.signal_change_value().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_value_changed_seeker));
+  seeker.set_value(0);
+ 
+  
+  // Then we create our Playlist viewer here :)
+ 
+ 
+ 
+   
+   
+
+   //The vertical ButtonBoxes:
+    m_VBox_Main.pack_start(m_Frame_Vertical, Gtk::PACK_SHRINK, 5);  
+    m_HBox.set_border_width(2);
+    m_Frame_Vertical.add(m_HBox);
+    //m_HBox.pack_start(m_CodecInfoArea);
+
+    //deliver_CodecInfo();
+
+    
+    m_HBox.pack_end(m_AlignmentVol,Gtk::PACK_SHRINK,4);
+  
+    m_AlignmentVol.add(m_SHBox);
+    m_SHBox.pack_start(
+    *Gtk::manage(new Gtk::Label("Volume:", 0)), Gtk::PACK_SHRINK);
+   
+   // define properties for the volume slider
+    
+    
+    m_SHBox.pack_start(vol,Gtk::PACK_SHRINK,2);
+    vol.set_range(0,100);
+    vol.set_draw_value(false);
+    vol.signal_change_value().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_value_changed_vol));
+    vol.set_value(80);	
+ // add the vertical lined box to the window
+m_VBox_Main.pack_start(video_area,Gtk::PACK_EXPAND_WIDGET,40);
+
+// then we connect a signal that we will use to our videa_area
+
+video_area.signal_realize().connect(sigc::mem_fun(*this,&Player_ControlsGUI::on_video_window_realize));
+   
+
+
+
+  m_PlaylistView.add(playlist);
+  //Set an automatic scrolling policy
+  m_PlaylistView.set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_AUTOMATIC);
+  m_VBox_Main.pack_end(m_PlaylistView,Gtk::PACK_EXPAND_WIDGET,20);
+  show_all_children();
+}
+
+Player_ControlsGUI::~Player_ControlsGUI()
+{
+}
+bool Player_ControlsGUI::on_value_changed_progressBar(double value)
+{
+ 
+ 
+
+double newValue = m_ProgressBar.get_fraction() + (engine.getSliderPOS()/100);
+if(newValue > 1.0)
+ newValue = 0.0;
+
+m_ProgressBar.set_fraction(newValue);
+
+  
+}
+void Player_ControlsGUI::deliver_CodecInfo()
+{
+// function to continously update the Codec data display
+	m_codecdata = Gtk::TextBuffer::create(); // create the buffer
+
+	m_codecdata->set_text(data);
+	m_CodecInfoArea.set_buffer(m_codecdata); // set the buffer
+}
+void Player_ControlsGUI::on_button_clicked()
+{
+ 	 hide();
+}
+bool Player_ControlsGUI::on_value_changed_seeker(Gtk::ScrollType, double value)
+{
+ // Here we can update the position of the seeker
+	 //test_seeker += 0.1; 
+
+	// on_value_changed_progressBar(test_seeker);
+ 
+  engine.seekState(value);
+
+}
+bool Player_ControlsGUI::on_value_changed_vol(Gtk::ScrollType, double value)
+{
+
+  engine.setVol(value);
+  
+}
+
+void Player_ControlsGUI::on_update_Label(gint64 pos, gint64 len)
+{     /*
+	std::ostringstream timerActive (std::ostringstream::out);
+	std::ostringstream timerStatic (std::ostringstream::out);
+
+	
+
+        // and now we create the label for the time with changes
+	m_progressLabel.set_text(timerActive.str()+ "/" +timerStatic.str());
+
+	*/
+}
+
+// Darn this code has grown real long .... William your a lazy student :)
+
+void Player_ControlsGUI::on_playbutton_pressed(){
+
+  // The UI changes :)
+  
+   m_playbutton.set_sensitive(false);
+  m_pausebutton.set_sensitive();
+  m_previousbutton.set_sensitive();
+  m_nextbutton.set_sensitive();
+  m_openbutton.set_sensitive(false);
+  m_stopbutton.set_sensitive();	
+  m_playbutton.hide();
+  m_pausebutton.show();
+// then call up the list
+// and place the uri into the engine
+
+//engine.get_File(list.find_item(index));
+
+//then engage the play state
+media_uri = list.find_item(index);
+std::cout<< "Test for linked list out put !!!"<<std::endl;
+std::cout<< media_uri<<std::endl;
+//engine.get_File("/home/william/Videos/season 1/Hunter X Hunter 2011 Episode 1.flv");
+engine.stopState();
+engine.get_File(media_uri);
+//data = engine.report();
+engine.playState();
+
+// clear the string after use
+
+
+m_timeout_connection = Glib::signal_timeout().connect(
+    sigc::mem_fun(*this, &Player_ControlsGUI::update), 200);
+ index++; 
+}
+void Player_ControlsGUI::on_pausebutton_pressed(){
+  // UI inits on button press
+
+  m_playbutton.set_sensitive();
+  m_pausebutton.set_sensitive(false);
+  m_playbutton.show();
+  m_pausebutton.hide();
+  engine.pauseState();
+  data = engine.report();
+}
+void Player_ControlsGUI::on_previousbutton_pressed(){
+
+if(index <= 1 ){
+on_stopbutton_pressed();
+}else{
+seeker.set_value(0);
+engine.stopState();
+media_uri = list.find_prev_item(index);
+engine.get_File(media_uri);
+engine.playState();
+index-=2;
+
+}
+}
+void Player_ControlsGUI::on_nextbutton_pressed()

@@ -1,0 +1,27 @@
+
+
+		Hello, thank you for downloading Will-Tanium Player.
+Compiling:
+	Unzip the file and enter the folder. Open a terminal and write "make compile"
+Running  :
+	To run the player, write "make run"
+
+Dependencies:
+	The player is full of bugs, does not play DVDs and may crash or behave 
+abnormally , please be careful in using it.
+
+
+Dependencies:
+
+	You must be running a unix like system i.e any linux flavour,BSD, System V etc
+	Compilers g++ must be running on your system
+	You must have libVLC installed on your computer, the easiest way to achieve this is by
+	installing VLC player in unix.
+
+	You must have gtkmm 3.0 installed on your computer <linux or BSD>
+	You must have sqlite 3 installed on your computer. This is usually pre-intalled in linux.
+
+	If all these dependencies are met, then you should be able to compile and run this player 
+	example.
+
+

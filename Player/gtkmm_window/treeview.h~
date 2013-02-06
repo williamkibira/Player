@@ -1,0 +1,72 @@
+#ifndef GTKMM_EXAMPLE_TREEVIEW_WITHPOPUP_H
+#define GTKMM_EXAMPLE_TREEVIEW_WITHPOPUP_H
+
+#include <gtkmm.h>
+
+class TreeView_WithPopup : public Gtk::TreeView
+{
+public:
+  TreeView_WithPopup();
+  virtual ~TreeView_WithPopup();
+
+protected:
+  // Override Signal handler:
+  // Alternatively, use signal_button_press_event().connect_notify()
+  virtual bool on_button_press_event(GdkEventButton *ev);
+
+  //Signal handler for popup menu items:
+  void on_menu_file_popup_generic();
+
+  
+  //Tree model columns:
+  class ModelColumns : public Gtk::TreeModel::ColumnRecord
+  {
+  public:
+
+    ModelColumns()
+    { add(m_col_id); add(m_col_name); }
+
+    Gtk::TreeModelColumn<unsigned int> m_col_id;
+    Gtk::TreeModelColumn<Glib::ustring> m_col_name;
+  };
+  
+  ModelColumns m_Columns;
+
+  //The Tree model:
+  Glib::RefPtr<Gtk::ListStore> m_refTreeModel;
+
+  Gtk::Menu m_Menu_Popup;
+};
+
+#endif //GTKMM_EXAMPLE_TREEVIEW_WITHPOPUP_H
+File: examplewindow.h (For use with gtkmm 3, not gtkmm 2)
+
+#ifndef GTKMM_EXAMPLEWINDOW_H
+#define GTKMM_EXAMPLEWINDOW_H
+
+#include <gtkmm-3.0/gtkmm.h>
+#include "treeview.h"
+
+class ExampleWindow : public Gtk::Window
+{
+public:
+  ExampleWindow();
+  virtual ~ExampleWindow();
+
+protected:
+  //Signal handlers:
+  void on_button_quit();
+
+ 
+
+  //Child widgets:
+  Gtk::VBox m_VBox;
+
+  Gtk::ScrolledWindow m_ScrolledWindow;
+  TreeView_WithPopup m_TreeView;
+
+  Gtk::HButtonBox m_ButtonBox;
+  Gtk::Button m_Button_Quit;
+};
+
+#endif //GTKMM_EXAMPLEWINDOW_H

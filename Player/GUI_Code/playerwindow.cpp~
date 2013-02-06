@@ -1,0 +1,67 @@
+/*
+    <one line to give the program's name and a brief idea of what it does.>
+    Copyright (C) 2013  <copyright holder> <email>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+
+#include "playerwindow.h"
+#include "playerbuttonbox.h"
+#include "../playerengine.h"
+PlayerWindow::PlayerWindow():
+    m_Box(Gtk::ORIENTATION_HORIZONTAL),
+    m_HBox(Gtk::ORIENTATION_HORIZONTAL),
+    m_adjustment(Gtk::Adjustment::create(0,100,1)),
+    frame_horizontal("WillNUX"),
+    slider(m_adjustment,Gtk::ORIENTATION_HORIZONTAL)
+{
+    set_title("Willnux Player");
+
+    add(m_Box);
+    m_Box.pack_start(frame_horizontal,Gtk::PACK_EXPAND_WIDGET,10);
+// Horizontal Button box
+    m_HBox.set_border_width(10);
+    frame_horizontal.add(m_HBox); //Added horizontal frame to box
+
+    m_HBox.pack_start(*Gtk::manage(new PlayerButtonBox(true,5,BUTTONBOX_SPREAD)),Gtk::PACK_EXPAND_WIDGET,10);
+
+// yes we have packed the buttons
+
+    slider.set_digits(0);
+    slider.set_value_pos(Gtk::POS_TOP);
+    slider.set_draw_value();
+    m_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,
+            &PlayerWindow::on_slider_value_change));
+// Preformatting of the slider
+
+
+    m_HBox.pack_start(slider);
+
+
+
+
+}
+void PlayerWindow::on_slider_value_change()
+{
+
+}
+
+
+PlayerWindow::~PlayerWindow()
+{
+
+}
+

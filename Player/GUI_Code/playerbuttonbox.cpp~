@@ -1,0 +1,107 @@
+/*
+    <one line to give the program's name and a brief idea of what it does.>
+    Copyright (C) 2013  <copyright holder> <email>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
+
+#include"playerbuttonbox.h"
+#include"../playerengine.h"
+#include"../uri_mechanism.h"
+PlayerButtonBox::PlayerButtonBox(bool horizontal, gint spacing, Gtk::ButtonBoxStyle layout)
+    :Gtk::Frame("WillNUx"),
+     m_play_button(Gtk::Stock::MEDIA_PLAY),
+     m_pause_button(Gtk::Stock::MEDIA_PAUSE),
+     m_prev_button(Gtk::Stock::MEDIA_PREVIOUS),
+     m_next_button(Gtk::Stock::MEDIA_NEXT),
+     m_Stop_button(Gtk::Stock::MEDIA_STOP),
+     m_Open(Gtk::Stock::OPEN),
+     m_Playlist(Gtk::Stock::SELECT_ALL)
+{
+    Gtk::ButtonBox *bbox = 0;
+
+    bbox = Gtk::manage( new Gtk::ButtonBox(Gtk::ORIENTATION_HORIZONTAL));
+    bbox->set_border_width(5);
+    add(*bbox);
+
+// Set out the Box's appearance
+
+    bbox->set_layout(layout);
+    bbox->set_spacing(spacing);
+// connect all buttons to relevant signals
+
+    m_play_button.signal_clicked().connect(sigc::mem_fun(*this,&PlayerButtonBox::on_button_play));
+    m_pause_button.signal_clicked().connect(sigc::mem_fun(*this,&PlayerButtonBox::on_button_pause));
+    m_prev_button.signal_clicked().connect(sigc::mem_fun(*this,&PlayerButtonBox::on_button_prev));
+    m_next_button.signal_clicked().connect(sigc::mem_fun(*this,&PlayerButtonBox::on_button_next));
+    m_Stop_button.signal_clicked().connect(sigc::mem_fun(*this,&PlayerButtonBox::on_button_stop));
+    m_Open.signal_clicked().connect(sigc::mem_fun(*this,&PlayerButtonBox::on_button_open));
+    m_Playlist.signal_clicked().connect(sigc::mem_fun(*this,&PlayerButtonBox::on_button_pls));
+
+
+// Then we add the buttons
+
+     bbox->add(m_play_button);
+     bbox->add(m_pause_button);
+     bbox->add(m_prev_button);
+     bbox->add(m_next_button);
+     bbox->add(m_Stop_button);
+     bbox->add(m_Open);
+     bbox->add(m_Playlist);
+
+
+
+
+
+}
+                                                                       void PlayerButtonBox::on_button_play()
+{
+//engine.Play_State();
+   // PlayerEngine.playerEngaged();
+    engine.Play_State();
+}
+void PlayerButtonBox::on_button_pause()
+{
+    engine.Pause_State();
+}
+void PlayerButtonBox::on_button_next()
+{
+    engine.Forward_State();
+}
+void PlayerButtonBox::on_button_prev()
+{
+    engine.Previous_State();
+}
+void PlayerButtonBox::on_button_stop()
+{
+    engine.Stop_State();
+}
+void PlayerButtonBox::on_button_open()
+{
+    URI_Mechanism uri_get;
+}
+void PlayerButtonBox::on_button_pls()
+{
+
+}
+PlayerButtonBox::~PlayerButtonBox()
+{
+
+}
+
+
+
+

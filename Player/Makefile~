@@ -1,0 +1,51 @@
+# The GUI code location for the player
+GUI_Code :=\
+GUI_Code/playergui.cpp\
+GUI_Code/playergui.h\
+GUI_Code/playlistview.cpp\
+GUI_Code/playlistview.h
+
+#the New window code
+Window_Code :=\
+gtkmm_window/PlayerWindow.cpp\
+gtkmm_window/PlayerWindow.h\
+gtkmm_window/playlistview.cpp\
+gtkmm_window/playlistview.h
+
+
+# The System code for the player
+
+SRC_Sys :=\
+medialist.cpp\
+medialist.h\
+playerengine.cpp\
+playerengine.h\
+mediastore.cpp\
+mediastore.h\
+uri_mechanism.cpp\
+uri_mechanism.h\
+main.cpp
+
+SRC_C_code :=\
+SDL_Window/SDL_Window.c\
+SDL_Window/SDL_Window.h
+
+
+CFLAGS :=\
+-lvlc\
+-lsqlite3\
+-lstdc++ 
+#-W \
+#-Wall\
+#-lX11
+
+C_LINKERS:= \
+`pkg-config gtkmm-3.0 --cflags --libs`
+#`pkg-config --cflags --libs gtk+-3.0`
+
+compile:
+	g++ $(Window_Code) $(SRC_Sys) -o testplayer $(C_LINKERS) $(CFLAGS)
+
+run:
+	./testplayer
+
